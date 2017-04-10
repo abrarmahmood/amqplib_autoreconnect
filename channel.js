@@ -29,22 +29,6 @@ module.exports = class Channel extends EventEmitter {
             .then(ch => {
                 this._channel = ch;
 
-                ch.on('close', err => {
-                    console.error('Channel closed, re-opening in 1 second. info: ');
-                    console.log(err);
-                    setTimeout(() => {
-                        this.emit('reconnect');
-                    }, 1000)
-                });
-
-                ch.on('error', err => {
-                    console.error('Channel closed, re-opening in 1 second. info: ');
-                    console.log(err);
-                    setTimeout(() => {
-                        this.emit('reconnect');
-                    }, 1000)
-                });
-
                 if (this.reconnect) {
                     this.emit('reconnection');
                 } else {
@@ -55,6 +39,10 @@ module.exports = class Channel extends EventEmitter {
             .catch(err => {
                 this.emit('failed-channel', err);
             })            
+        })
+
+        this.on('reconnection', () => {
+            console.log('Reconnected, reinitalised channel successfully.');
         })
 
         this.connectionEvents.on('failed-reconnect', err => {
