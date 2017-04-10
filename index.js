@@ -113,11 +113,11 @@ emitter.on('create-connection', str => {
     .then(connection => {
         const handleError = err => {
             emitter.emit('reconnect', err);
-            connection.removeListener('error')
+            connection.removeListener('error', handleError);
         }
         const handleClose = err => {
             emitter.emit('reconnect', err);
-            connection.removeListener('close')
+            connection.removeListener('close', handleClose);
         }
 
         connection.on('close', handleClose);
